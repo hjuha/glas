@@ -1,0 +1,44 @@
+* {
+	font-family: 'Lora' !important;
+}
+
+fieldset {
+	margin-top: 5px !important;
+	padding-top: 8px !important;
+	padding-bottom: 8px !important;
+	padding-left: 12px !important;
+	padding-right: 12px !important;
+	border: 2px groove !important;
+}
+
+.pad {
+	padding: 5px !important;
+}
+
+.slider_values {
+	display: flex;
+}
+
+.slider_left {
+	padding: 3px !important;
+	flex: 50%;
+	min-width: 50%;
+	word-wrap: break-word;
+}
+
+.slider_right {
+	padding: 3px !important;
+	flex: 50%;
+	min-width: 50%;
+	text-align: right;
+	word-wrap: break-word;
+}
+
+.slider_container {
+	margin-top: 2px;
+}
+
+.ui-checkboxradio-label {
+	word-wrap: break-word !important;
+    max-width: 100% !important;
+}

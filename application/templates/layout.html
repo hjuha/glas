@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fi">
+	<head>
+		<meta charset="utf-8">
+		<title>Kyselijä</title>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+		<link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+		<link rel="stylesheet" href="/resources/demos/style.css">
+		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script>
+		$( function() {
+			var id = 1;
+			var option_ids = {};
+			$( ".slider" ).slider();
+			$( ".mc_input" ).checkboxradio();
+			$( ".jbtn" ).button();
+			$("#new_slider").click(function(){
+				$("#questions").append(`<fieldset><table>
+					<tr><td>Question:</td><td><input name="question${id}" type="text"></td>
+					<tr><td>Left value:</td><td><input name="left${id}" type="text"></td>
+					<tr><td>Right value:</td><td><input name="right${id}" type="text"></td>
+					</table></fieldset>`);
+				id += 1;
+			});
+			$("#new_multichoice").click(function(){
+				option_ids[id] = 1;
+				$("#questions").append(`<fieldset>Question: <input name="question${id}" type="text"><br>
+					Options:<br>
+					<div id="options${id}">
+					<input type="text" name="option${id}_${option_ids[id]}"><br>
+					</div>
+					<button type="button" class="jbtn ui-button ui-widget ui-state-default ui-corner-all" id="new_option${id}">Add option</button>
+					</fieldset>`);
+				let my_id = id;
+				$(`#new_option${id}`).click(function(){ option_ids[my_id]++; $("#options" + my_id).append(`<input type="text" name="option` + my_id + `_${option_ids[my_id]}"><br>`);});
+				id += 1;
+			});
+		});
+		</script>
+	</head>
+
+	<body>
+		<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+			<center style="width: 100% !important">
+				<a style="font-size: 60px !important" class="navbar-brand" href="{{ url_for('index') }}">Kyselijä</a>
+			</center>
+		</nav>
+		
+		<main style="width: 600px !important" role="main" class="container">
+			{% block body %}
+			<p>
+				Hello World!
+			</p>
+			{% endblock %}
+		</main>
+		
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	</body>
+</html>

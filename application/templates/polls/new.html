@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<p>
+	<h2>Create a new poll</h2>
+	
+	<form method="POST" action="{{ url_for('new_poll') }}">
+		Title: <input name="title" type=text><br>
+		Description:<br>
+		<textarea name="desc" style="width: 100%"></textarea>
+		<div id="questions">
+
+		</div>
+		<button type="button" class="jbtn ui-button ui-widget ui-state-default ui-corner-all" id="new_slider">New slider</button>
+		<button type="button" class="jbtn ui-button ui-widget ui-state-default ui-corner-all" id="new_multichoice">New multichoice question</button>
+		<input class="jbtn ui-button ui-widget ui-state-default ui-corner-all" type="submit" value="Create poll">
+	</form>
+</p>
+{% endblock %}

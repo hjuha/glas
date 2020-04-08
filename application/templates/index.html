@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<p>
+	<a href="{{ url_for('new_poll') }}">Create a new poll</a>
+
+	<h2>Polls:</h2>
+
+	{% for poll in polls %}
+		<a href="/{{ poll.id }}/"><h4>{{ poll.name }}</h4></a>
+	{% endfor %}
+</p>
+{% endblock %}
