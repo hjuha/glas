@@ -1,1 +1,1 @@
-Private-ish poetry application
+A web application for creating polls
