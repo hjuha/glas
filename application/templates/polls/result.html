@@ -1,0 +1,12 @@
+{% extends "layout.html" %}
+
+{% block body %}
+<p>
+    <center>
+        <span class="wrap" style="font-size: 22px">You are...</span><br>
+        <span class="wrap" style="font-size: 52px">{{ result.name }}</span><br>
+        <img src="{{ result.image_path }}" style="padding: 10px; border: 15px solid {{ result.secondary_color }};"><br><br>
+    </center>
+    {{ result.description }}
+</p>
+{% endblock %}

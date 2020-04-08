@@ -114,5 +114,4 @@ def get_poll(poll_id):
 
 @app.route("/result/<result_id>/")
 def get_result(result_id):
-	result = Result(1, "Nekaia", "Nekaia is uwu", "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/35612870-f267-4158-a48b-af55e0fd869d/dcgw7t5-29667c96-26ae-484c-80cd-139ed28f78d1.jpg/v1/fill/w_707,h_1000,q_75,strp/eladrin_autumn_commission_by_syllie_dcgw7t5-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAwMCIsInBhdGgiOiJcL2ZcLzM1NjEyODcwLWYyNjctNDE1OC1hNDhiLWFmNTVlMGZkODY5ZFwvZGNndzd0NS0yOTY2N2M5Ni0yNmFlLTQ4NGMtODBjZC0xMzllZDI4Zjc4ZDEuanBnIiwid2lkdGgiOiI8PTcwNyJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.Zubp9tnkGPmtY0rQ-dfaJwlslryi9Y6eYczfA-S2ors", "#ffbe85", "#da7c46")
 	return render_template("polls/result.html", result=Result.query.get(result_id))
