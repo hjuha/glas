@@ -7,9 +7,9 @@
 		<p>{{ poll.description }}</p>
 	</div>
 	<form method="POST" id="result_form">
-		<hr>
-		<h2>Add a new result</h2>
 		{% if answer is defined %}
+			<hr>
+			<h2>Add a new result</h2>
 			Name: <input name="name" type=text>
 			<hr>
 			Description:<br>
@@ -21,6 +21,8 @@
 			<hr>
 			Secondary color: <input name="secondary" type=text class="color_picker">
 			<hr>
+		{% else %}
+			<a class="jbtn ui-button ui-widget ui-state-default ui-corner-all" href="/{{ poll.id }}/answer">Add a new result</a>
 		{% endif %}
 		{% for question in questions %}
 			<fieldset>
