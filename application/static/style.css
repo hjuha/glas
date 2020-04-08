@@ -48,6 +48,6 @@ fieldset {
 }
 
 img {
-	max-width: 70%;
+	max-width: min(500px, 70%);
 	max-height: 500px;
 }
