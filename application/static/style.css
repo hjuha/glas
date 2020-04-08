@@ -11,6 +11,10 @@ fieldset {
 	border: 2px groove !important;
 }
 
+.wrap {
+	word-wrap: break-word !important;
+}
+
 .pad {
 	padding: 5px !important;
 }
