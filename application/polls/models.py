@@ -43,3 +43,39 @@ class Option(Base):
 	def __init__(self, text, question_id):
 		self.text = text
 		self.question_id = question_id
+
+class Result(Base):
+	poll_id = db.Column(db.Integer, db.ForeignKey("poll.id"), nullable = False, index = True)
+	name = db.Column(db.String(150), nullable = False)
+	description = db.Column(db.String(2000), nullable = False)
+	image_path = db.Column(db.String(250), nullable = False)
+	primary_color = db.Column(db.String(7), nullable = False)
+	secondary_color = db.Column(db.String(7), nullable = False)
+	option_results = db.relationship("OptionResult", backref = "Result", lazy = True)
+	slider_results = db.relationship("SliderResult", backref = "Result", lazy = True)
+	
+	def __init__(self, poll_id, name, description, image_path, primary_color, secondary_color):
+		self.poll_id = poll_id
+		self.name = name
+		self.description = description
+		self.image_path = image_path
+		self.primary_color = primary_color
+		self.secondary_color = secondary_color
+
+class OptionResult(Base):
+	result_id = db.Column(db.Integer, db.ForeignKey("result.id"), nullable = False, index = True)
+	option_id = db.Column(db.Integer, db.ForeignKey("option.id"), nullable = False, index = True)
+
+	def __init__(self, result_id, option_id):
+		self.result_id = result_id
+		self.option_id = option_id
+
+class SliderResult(Base):
+	result_id = db.Column(db.Integer, db.ForeignKey("result.id"), nullable = False, index = True)
+	slider_id = db.Column(db.Integer, db.ForeignKey("option.id"), nullable = False, index = True)
+	value = db.Column(db.Integer)
+
+	def __init__(self, result_id, slider_id, value):
+		self.result_id = result_id
+		self.slider_id = slider_id
+		self.value = value

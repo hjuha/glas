@@ -6,28 +6,47 @@
 		<span class="wrap" style="font-size: 26px">{{ poll.name }}</span>
 		<p>{{ poll.description }}</p>
 	</div>
-	{% for question in questions %}
-		<fieldset>
-			<span class="wrap" style="font-size: 23px">{{ question.text}}</span>
-			{% if question.question_type == "slider" %}
-				{% for slider in question.sliders %}
-					<div class="pad">
-						<div class="slider_values">
-							<div class="slider_left">{{ slider.left_text }}</div>
-							<div class="slider_right">{{ slider.right_text }}</div>
+	<form method="POST" id="result_form">
+		<hr>
+		<h2>Add a new result</h2>
+		{% if answer is defined %}
+			Name: <input name="name" type=text>
+			<hr>
+			Description:<br>
+			<textarea name="desc" style="width: 100%"></textarea>
+			<hr>
+			Image URL: <input name="image" type=text>
+			<hr>
+			Primary color: <input name="primary" type=text class="color_picker">
+			<hr>
+			Secondary color: <input name="secondary" type=text class="color_picker">
+			<hr>
+		{% endif %}
+		{% for question in questions %}
+			<fieldset>
+				<span class="wrap" style="font-size: 23px">{{ question.text}}</span>
+				{% if question.question_type == "slider" %}
+					{% for slider in question.sliders %}
+						<div class="pad">
+							<div class="slider_values">
+								<div class="slider_left">{{ slider.left_text }}</div>
+								<div class="slider_right">{{ slider.right_text }}</div>
+							</div>
+							<div class="slider_container">
+								<div class="slider" id="slider{{ question.id }}"></div>
+							</div>
 						</div>
-						<div class="slider_container">
-							<div class="slider"></div>
-						</div>
-					</div>
-				{% endfor %}
-			{% elif question.question_type == "multichoice" %}
-				{% for option in question.options %}
-					<label for="radio-{{ option.id }}">{{ option.text }}</label>
-					<input class="mc_input" type="radio" name="radio-{{ question.id }}" id="radio-{{ option.id }}">
-				{% endfor %}
-			{% endif %}
-		</fieldset>
-	{% endfor %}
+					{% endfor %}
+				{% elif question.question_type == "multichoice" %}
+					{% for option in question.options %}
+						<label for="radio-{{ option.id }}">{{ option.text }}</label>
+						<input class="mc_input" type="radio" name="choice{{ question.id }}" id="radio-{{ option.id }}" value="{{ option.id }}">
+					{% endfor %}
+				{% endif %}
+			</fieldset>
+		{% endfor %}
+		<hr>
+		<input type="submit" class="jbtn ui-button ui-widget ui-state-default ui-corner-all" value="Send">
+	</form>
 </p>
 {% endblock %}

@@ -11,11 +11,13 @@
 		<link rel="stylesheet" href="/resources/demos/style.css">
 		<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+		<script src="https://bgrins.github.io/spectrum/spectrum.js"></script>
+		<link rel='stylesheet' href='https://bgrins.github.io/spectrum/spectrum.css' />
 		<script>
 		$( function() {
 			var id = 1;
 			var option_ids = {};
-			$( ".slider" ).slider();
+			$( ".slider" ).slider({ min: 0, max: 100, value: 50 });
 			$( ".mc_input" ).checkboxradio();
 			$( ".jbtn" ).button();
 			$("#new_slider").click(function(){
@@ -25,6 +27,10 @@
 					<tr><td>Right value:</td><td><input name="right${id}" type="text"></td>
 					</table></fieldset>`);
 				id += 1;
+			});
+			$(".color_picker").spectrum({
+				color: "#ff0000",
+				preferredFormat: "rgb"
 			});
 			$("#new_multichoice").click(function(){
 				option_ids[id] = 1;
@@ -39,11 +45,21 @@
 				$(`#new_option${id}`).click(function(){ option_ids[my_id]++; $("#options" + my_id).append(`<input type="text" name="option` + my_id + `_${option_ids[my_id]}"><br>`);});
 				id += 1;
 			});
+			$("#result_form").submit(function(){
+				let sliders = document.getElementsByClassName("slider");
+				for (let slider of sliders) {
+					$("#result_form").append(`<input type="text" name="${slider.id}" value="${$(slider).slider("value")}">`);
+				}
+				return true;
+			});
 		});
 		</script>
 	</head>
-
-	<body>
+	{% if result is defined %}
+		<body style="background: {{ result.primary_color }};">
+	{% else %}
+		<body>
+	{% endif %}
 		<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
 			<center style="width: 100% !important">
 				<a style="font-size: 60px !important" class="navbar-brand" href="{{ url_for('index') }}">Kyselijä</a>

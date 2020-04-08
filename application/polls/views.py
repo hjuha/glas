@@ -1,9 +1,7 @@
 from flask import render_template, request, redirect, url_for
 
 from application import app, db
-from application.polls.models import Poll, Question, Slider, Option
-
-import hashlib
+from application.polls.models import Poll, Question, Slider, Option, Result, OptionResult, SliderResult
 
 @app.route("/new/", methods = ["GET", "POST"])
 def new_poll():
@@ -63,6 +61,46 @@ def new_poll():
 
 	return redirect(url_for("index"))
 
+@app.route("/<poll_id>/answer", methods = ["GET", "POST"])
+def answer_poll(poll_id):
+	poll = Poll.query.get(poll_id)
+	questions = []
+	question = poll.first_question
+	while question:
+		questions.append(Question.query.get(question))
+		question = questions[-1].successor
+
+	if request.method == "GET":
+		return render_template("polls/poll.html", poll=poll, questions=questions, answer=True)
+	
+	print(request.form)
+	def hsv2rgb(t):
+		t = t[4:-1].split(", ")
+		r = int(t[0])
+		g = int(t[1])
+		b = int(t[2])
+		return '#%02x%02x%02x' % (r, g, b)
+	primary = hsv2rgb(request.form["primary"])
+	secondary = hsv2rgb(request.form["secondary"])
+	result = Result(poll_id, request.form["name"], request.form["desc"], request.form["image"], primary, secondary)
+	db.session().add(result)
+	db.session().commit()
+
+	for question in questions:
+		if question.question_type == "slider":
+			for slider in question.sliders:
+				if "slider" + str(slider.id) in request.form:
+					slider_result = SliderResult(result.id, slider.id, request.form["slider" + str(slider.id)])
+					db.session().add(slider_result)
+					db.session().commit()
+		elif question.question_type == "multichoice":
+			for option in question.options:
+				if "choice" + str(question.id) in request.form and int(request.form["choice" + str(question.id)]) == option.id:
+					option_result = OptionResult(result.id, option.id)
+					db.session().add(option_result)
+					db.session().commit()
+
+	return redirect("/result/" + str(result.id) + "/")
 
 @app.route("/<poll_id>/")
 def get_poll(poll_id):
@@ -73,3 +111,8 @@ def get_poll(poll_id):
 		questions.append(Question.query.get(question))
 		question = questions[-1].successor
 	return render_template("polls/poll.html", poll=poll, questions=questions)
+
+@app.route("/result/<result_id>/")
+def get_result(result_id):
+	result = Result(1, "Nekaia", "Nekaia is uwu", "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/35612870-f267-4158-a48b-af55e0fd869d/dcgw7t5-29667c96-26ae-484c-80cd-139ed28f78d1.jpg/v1/fill/w_707,h_1000,q_75,strp/eladrin_autumn_commission_by_syllie_dcgw7t5-fullview.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTAwMCIsInBhdGgiOiJcL2ZcLzM1NjEyODcwLWYyNjctNDE1OC1hNDhiLWFmNTVlMGZkODY5ZFwvZGNndzd0NS0yOTY2N2M5Ni0yNmFlLTQ4NGMtODBjZC0xMzllZDI4Zjc4ZDEuanBnIiwid2lkdGgiOiI8PTcwNyJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.Zubp9tnkGPmtY0rQ-dfaJwlslryi9Y6eYczfA-S2ors", "#ffbe85", "#da7c46")
+	return render_template("polls/result.html", result=Result.query.get(result_id))
