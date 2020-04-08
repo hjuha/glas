@@ -6,6 +6,7 @@ class Poll(Base):
 	description = db.Column(db.String(2000), nullable = False)
 	first_question = db.Column(db.Integer, db.ForeignKey("question.id"), nullable = True, index = True)
 	questions = db.relationship("Question", backref = "poll", lazy = True, primaryjoin="Poll.id==Question.poll_id")
+	results = db.relationship("Result", backref = "poll", lazy = True)
 
 	def __init__(self, name, description, first_question):
 		self.name = name

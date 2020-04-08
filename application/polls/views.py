@@ -8,11 +8,6 @@ def new_poll():
 	if request.method == "GET":
 		return render_template("polls/new.html")
 
-	#print(request.form)
-
-	#if hashlib.sha256(password.encode('utf-8')).hexdigest() != "c6d37d0e5d3d7445293322dd693bfb98d38ee3d7228e1628c2e85bf537abe880":
-	#	return render_template("poems/new.html", form = form)
-
 	questions = []
 	sliders = []
 	options = []
@@ -27,12 +22,10 @@ def new_poll():
 				slider_left = request.form["left" + q_id]
 				slider_right = request.form["right" + q_id]
 				sliders[-1] = (slider_left, slider_right)
-				#print("SLIDER", question, slider_left, slider_right)
 			else:
 				for key_ in request.form:
 					if key_[:7+len(q_id)] == "option" + q_id + "_":
 						options[-1].append(request.form[key_])
-				#print("MULTICHOICE", question, options)
 
 	poll = Poll(request.form["title"], request.form["desc"], None)
 	db.session().add(poll)
@@ -75,6 +68,8 @@ def answer_poll(poll_id):
 	
 	print(request.form)
 	def hsv2rgb(t):
+		if len(t) < 4:
+			return "#FFFFFF"
 		t = t[4:-1].split(", ")
 		r = int(t[0])
 		g = int(t[1])
@@ -89,8 +84,8 @@ def answer_poll(poll_id):
 	for question in questions:
 		if question.question_type == "slider":
 			for slider in question.sliders:
-				if "slider" + str(slider.id) in request.form:
-					slider_result = SliderResult(result.id, slider.id, request.form["slider" + str(slider.id)])
+				if "slider" + str(question.id) in request.form:
+					slider_result = SliderResult(result.id, slider.id, int(request.form["slider" + str(question.id)]))
 					db.session().add(slider_result)
 					db.session().commit()
 		elif question.question_type == "multichoice":
@@ -102,15 +97,35 @@ def answer_poll(poll_id):
 
 	return redirect("/result/" + str(result.id) + "/")
 
-@app.route("/<poll_id>/")
-def get_poll(poll_id):
+@app.route("/<poll_id>/", methods = ["GET", "POST"])
+def handle_poll(poll_id):
 	poll = Poll.query.get(poll_id)
 	questions = []
 	question = poll.first_question
 	while question:
 		questions.append(Question.query.get(question))
 		question = questions[-1].successor
-	return render_template("polls/poll.html", poll=poll, questions=questions)
+	if request.method == "GET":
+		return render_template("polls/poll.html", poll=poll, questions=questions)
+
+	best_score = -1.
+	best_result = None
+	for result in poll.results:
+		score = 0.
+		
+		for slider_result in result.slider_results:
+			if "slider" + str(Slider.query.get(slider_result.slider_id).question_id) in request.form:
+				score += 1. - pow(abs(slider_result.value - int(request.form["slider" + str(Slider.query.get(slider_result.slider_id).question_id)])) / 100, 2)
+		for option_result in result.option_results:
+			if "choice" + str(Option.query.get(option_result.option_id).question_id) in request.form and int(request.form["choice" + str(Option.query.get(option_result.option_id).question_id)]) == option_result.option_id:
+				score += 1.
+		print("RESULT: ", result.name, score, "\n"*10)
+		if score > best_score:
+			best_score = score
+			best_result = result
+	if best_result == None:
+		return render_template("polls/no_results.html")
+	return render_template("polls/result.html", result=best_result)
 
 @app.route("/result/<result_id>/")
 def get_result(result_id):

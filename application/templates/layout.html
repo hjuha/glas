@@ -48,7 +48,7 @@
 			$("#result_form").submit(function(){
 				let sliders = document.getElementsByClassName("slider");
 				for (let slider of sliders) {
-					$("#result_form").append(`<input type="text" name="${slider.id}" value="${$(slider).slider("value")}">`);
+					$("#result_form").append(`<input style="display: none;" type="text" name="${slider.id}" value="${$(slider).slider("value")}">`);
 				}
 				return true;
 			});
