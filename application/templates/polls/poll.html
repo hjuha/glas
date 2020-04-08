@@ -4,7 +4,7 @@
 <p>
 	<h3>{{ poll.name }}</h2>
 	<p>{{ poll.description }}</p>
-	{% for question in poll.questions %}
+	{% for question in questions %}
 		{% if question.question_type == "slider" %}
 			{% for slider in question.sliders %}
 				<fieldset>

@@ -66,4 +66,10 @@ def new_poll():
 
 @app.route("/<poll_id>/")
 def get_poll(poll_id):
-	return render_template("polls/poll.html", poll = Poll.query.get(poll_id))
+	poll = Poll.query.get(poll_id)
+	questions = []
+	question = poll.first_question
+	while question:
+		questions.append(Question.query.get(question))
+		question = questions[-1].successor
+	return render_template("polls/poll.html", poll=poll, questions=questions)
