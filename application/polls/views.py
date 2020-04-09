@@ -100,6 +100,8 @@ def answer_poll(poll_id):
 @app.route("/<poll_id>/", methods = ["GET", "POST"])
 def handle_poll(poll_id):
 	poll = Poll.query.get(poll_id)
+	if not poll:
+		return render_template("404.html")
 	questions = []
 	question = poll.first_question
 	while question:
