@@ -113,20 +113,24 @@ def handle_poll(poll_id):
 	if request.method == "GET":
 		return render_template("polls/poll.html", poll=poll, questions=questions)
 
-	print(request.form["choice3"], "\n"*10)
-
 	best_score = -1.
 	best_result = None
 	for result in poll.results:
 		score = 0.
 		
+		counts = {}
+		for option_result in result.option_results:
+			q_id = str(Option.query.get(option_result.option_id).question_id)
+			if q_id not in counts:
+				counts[q_id] = 0
+			counts[q_id] += 1
+
 		for slider_result in result.slider_results:
 			if "slider" + str(Slider.query.get(slider_result.slider_id).question_id) in request.form:
-				score += 1. - pow(abs(slider_result.value - int(request.form["slider" + str(Slider.query.get(slider_result.slider_id).question_id)])) / 100, 2)
+				score += max(0., 1. - pow(abs(slider_result.value - int(request.form["slider" + str(Slider.query.get(slider_result.slider_id).question_id)])) / 50, 2))
 		for option_result in result.option_results:
-			if "choice" + str(Option.query.get(option_result.option_id).question_id) in request.form and int(request.form["choice" + str(Option.query.get(option_result.option_id).question_id)]) == option_result.option_id:
-				score += 1.
-		print("RESULT: ", result.name, score, "\n"*10)
+			if "choice" + str(Option.query.get(option_result.option_id).question_id) in request.form and str(option_result.option_id) in request.form.getlist("choice" + str(Option.query.get(option_result.option_id).question_id)):
+				score += 1. / max(counts[str(Option.query.get(option_result.option_id).question_id)], len(request.form.getlist("choice" + str(Option.query.get(option_result.option_id).question_id))))
 		if score > best_score:
 			best_score = score
 			best_result = result
