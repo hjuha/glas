@@ -7,7 +7,7 @@ class Poll(Base):
 	first_question = db.Column(db.Integer, db.ForeignKey("question.id"), nullable = True, index = True)
 	questions = db.relationship("Question", backref = "poll", lazy = True, primaryjoin="Poll.id==Question.poll_id")
 	results = db.relationship("Result", backref = "poll", lazy = True)
-
+	
 	def __init__(self, name, description, first_question):
 		self.name = name
 		self.description = description
@@ -20,12 +20,14 @@ class Question(Base):
 	successor = db.Column(db.Integer, db.ForeignKey("question.id"), nullable = True, index = True)
 	options = db.relationship("Option", backref = "question", lazy = True)
 	sliders = db.relationship("Slider", backref = "question", lazy = True)
+	maximum = db.Column(db.Integer)
 
-	def __init__(self, text, question_type, poll_id, successor):
+	def __init__(self, text, question_type, poll_id, successor, maximum):
 		self.text = text
 		self.question_type = question_type
 		self.poll_id = poll_id
 		self.successor = successor
+		self.maximum = maximum
 
 class Slider(Base):
 	left_text = db.Column(db.String(150), nullable = False)

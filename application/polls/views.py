@@ -11,10 +11,12 @@ def new_poll():
 	questions = []
 	sliders = []
 	options = []
+	maximums = []
 	for key in request.form:
 		if key[:8] == "question":
 			sliders.append([])
 			options.append([])
+			maximums.append(-1)
 			q_id = key[8:]
 			question = request.form[key]
 			questions.append(question)
@@ -23,6 +25,8 @@ def new_poll():
 				slider_right = request.form["right" + q_id]
 				sliders[-1] = (slider_left, slider_right)
 			else:
+				if "maximum" + q_id in request.form:
+					maximums[-1] = int(request.form["maximum" + q_id])
 				for key_ in request.form:
 					if key_[:7+len(q_id)] == "option" + q_id + "_":
 						options[-1].append(request.form[key_])
@@ -35,7 +39,7 @@ def new_poll():
 	i = len(questions) - 1
 	prev_id = None
 	while i >= 0:
-		question = Question(questions[i], "slider" if sliders[i] else "multichoice", poll_id, prev_id)
+		question = Question(questions[i], "slider" if sliders[i] else ("multiselect" if maximums[i] >= 0 else "multichoice"), poll_id, prev_id, maximums[i])
 		db.session().add(question)
 		db.session().commit()
 		prev_id = question.id
@@ -66,7 +70,6 @@ def answer_poll(poll_id):
 	if request.method == "GET":
 		return render_template("polls/poll.html", poll=poll, questions=questions, answer=True)
 	
-	print(request.form)
 	def hsv2rgb(t):
 		if len(t) < 4:
 			return "#FFFFFF"
@@ -88,9 +91,9 @@ def answer_poll(poll_id):
 					slider_result = SliderResult(result.id, slider.id, int(request.form["slider" + str(question.id)]))
 					db.session().add(slider_result)
 					db.session().commit()
-		elif question.question_type == "multichoice":
+		elif question.question_type == "multichoice" or question.question_type == "multiselect":
 			for option in question.options:
-				if "choice" + str(question.id) in request.form and int(request.form["choice" + str(question.id)]) == option.id:
+				if "choice" + str(question.id) in request.form and str(option.id) in request.form.getlist("choice" + str(question.id)):
 					option_result = OptionResult(result.id, option.id)
 					db.session().add(option_result)
 					db.session().commit()
@@ -109,6 +112,8 @@ def handle_poll(poll_id):
 		question = questions[-1].successor
 	if request.method == "GET":
 		return render_template("polls/poll.html", poll=poll, questions=questions)
+
+	print(request.form["choice3"], "\n"*10)
 
 	best_score = -1.
 	best_result = None
