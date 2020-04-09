@@ -48,6 +48,29 @@ fieldset {
 }
 
 img {
-	max-width: min(500px, 70%);
+	max-width: min(600px, 70%);
 	max-height: 500px;
+}
+
+.delete {
+	float: right;
+	display: inline-block;
+	font-weight: 900;
+	color: #C00;
+}
+
+.delete:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.delete_choice {
+	margin-left: 5px;
+	font-weight: 900;
+	color: #C00;
+}
+
+.delete_choice:hover {
+	text-decoration: underline;
+	cursor: pointer;
 }
