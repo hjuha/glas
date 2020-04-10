@@ -14,7 +14,7 @@ class Poll(Base):
 		self.first_question = first_question
 
 class Question(Base):
-	text = db.Column(db.String(150), nullable = False)
+	text = db.Column(db.String(400), nullable = False)
 	question_type = db.Column(db.String(12), nullable = False)
 	poll_id = db.Column(db.Integer, db.ForeignKey("poll.id"), nullable = False, index = True)
 	successor = db.Column(db.Integer, db.ForeignKey("question.id"), nullable = True, index = True)
