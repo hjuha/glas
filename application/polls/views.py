@@ -140,4 +140,9 @@ def handle_poll(poll_id):
 
 @app.route("/result/<result_id>/")
 def get_result(result_id):
-	return render_template("polls/result.html", result=Result.query.get(result_id))
+	result = Result.query.get(result_id)
+	brightness = 255
+	if result:
+		c = result.primary_color
+		brightness = (int(c[1:3], 16) + int(c[3:5], 16) + int(c[5:7], 16)) / 3
+	return render_template("polls/result.html", result=Result.query.get(result_id), brightness=brightness)

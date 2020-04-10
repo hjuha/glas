@@ -2,7 +2,7 @@
 
 {% block body %}
 <p>
-    <center>
+    <center {% if brightness is defined %} {% if brightness < 100 %} style="color: #FFFFFF !important" {% endif %} {% endif %}>
         <span class="wrap" style="font-size: 22px">You are...</span><br>
         <span class="wrap" style="font-size: 52px">{{ result.name }}</span><br>
         <img src="{{ result.image_path }}" style="padding: 10px; border: 15px solid {{ result.secondary_color }};"><br><br>
