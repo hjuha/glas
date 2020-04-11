@@ -136,7 +136,9 @@ def handle_poll(poll_id):
 			best_result = result
 	if best_result == None:
 		return render_template("polls/no_results.html")
-	return render_template("polls/result.html", result=best_result)
+	c = result.primary_color
+	brightness = (int(c[1:3], 16) + int(c[3:5], 16) + int(c[5:7], 16)) / 3
+	return render_template("polls/result.html", result=best_result, brightness=brightness)
 
 @app.route("/result/<result_id>/")
 def get_result(result_id):
