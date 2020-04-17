@@ -115,6 +115,13 @@ def handle_poll(poll_id):
 
 	best_score = -1.
 	best_result = None
+	all_results = []
+
+	class Pair:
+		def __init__(self, result, score):
+			self.result = result
+			self.score = str(round(100 * score)) + "%"
+
 	for result in poll.results:
 		score = 0.
 		
@@ -134,11 +141,15 @@ def handle_poll(poll_id):
 		if score > best_score:
 			best_score = score
 			best_result = result
+		all_results.append(Pair(result, score / len(poll.questions)))
 	if best_result == None:
 		return render_template("polls/no_results.html")
+
+	all_results.sort(key=(lambda result: -int(result.score[:-1])))
+
 	c = result.primary_color
 	brightness = (int(c[1:3], 16) + int(c[3:5], 16) + int(c[5:7], 16)) / 3
-	return render_template("polls/result.html", result=best_result, brightness=brightness)
+	return render_template("polls/result.html", result=best_result, brightness=brightness, all_results=all_results)
 
 @app.route("/result/<result_id>/")
 def get_result(result_id):

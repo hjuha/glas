@@ -8,5 +8,16 @@
         <img src="{{ result.image_path }}" style="padding: 10px; border: 15px solid {{ result.secondary_color }};"><br><br>
     </center>
     <span style="white-space: pre-wrap !important; {% if brightness is defined %} {% if brightness < 100 %} color: #FFFFFF !important {% endif %} {% endif %}">{{ result.description }}</span>
+    {% if all_results is defined %}
+
+        <div id="fixed" style="padding: 10px; border-radius: 10px; border: 5px solid {{ result.secondary_color }}; {% if brightness is defined %} {% if brightness < 100 %} color: #FFFFFF !important {% endif %} {% endif %}">
+            <b><u>Results:</u></b><br>
+            <table>
+            {% for pair in all_results %}
+                <tr><td>{{ pair.result.name }}</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>{{ pair.score }}</td></tr>
+            {% endfor %}
+            </table>
+        </div>
+    {% endif %}
 </p>
 {% endblock %}
