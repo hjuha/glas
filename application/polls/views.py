@@ -147,7 +147,7 @@ def handle_poll(poll_id):
 
 	all_results.sort(key=(lambda result: -int(result.score[:-1])))
 
-	c = result.primary_color
+	c = best_result.primary_color
 	brightness = (int(c[1:3], 16) + int(c[3:5], 16) + int(c[5:7], 16)) / 3
 	return render_template("polls/result.html", result=best_result, brightness=brightness, all_results=all_results)
 
